@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botpress Chatbot Test</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        
+        #webchat-container {
+            width: 100%;
+            min-height: 500px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        #webchat {
+            width: 100%;
+            min-height: 460px;
+        }
+        
+        #status-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error-text {
+            color: #d32f2f;
+            font-weight: 500;
+        }
+        
+        .success-text {
+            color: #388e3c;
+            font-weight: 500;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        .info-box code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Botpress Chatbot Integration Test</h1>
+        <p>This page tests the Botpress webchat integration in isolation.</p>
+        
+        <div class="info-box">
+            <h3>📋 Configuration Details</h3>
+            <p><strong>Bot ID:</strong> <code>3ad4bc32-d16f-49c5-a0f6-ded74c7bcec1</code></p>
+            <p><strong>Client ID:</strong> <code>9f464e23-0fb0-4cf9-b219-cecca1c49442</code></p>
+            <p><strong>Webchat Version:</strong> <code>v3.5</code></p>
+        </div>
+        
+        <div class="status" id="diagnostic-status">
+            <strong>Status:</strong> <span id="status-text">Initializing...</span>
+        </div>
+        
+        <div id="webchat-container">
+            <div id="status-message">
+                <p>🔄 Loading AgriTech Assistant...</p>
+                <small style="color: #999;">Connecting to Botpress Cloud</small>
+            </div>
+            <div id="webchat" style="display: none;"></div>
+        </div>
+        
+        <div id="console-logs" style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+            <h3>📝 Console Logs</h3>
+            <div id="log-content" style="font-family: monospace; font-size: 12px;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js" 
+            onerror="handleScriptError()" 
+            onload="initializeBotpress()">
+    </script>
+
+    <script>
+        let initTimeout;
+        const logContainer = document.getElementById('log-content');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#d32f2f' : type === 'success' ? '#388e3c' : '#666';
+            logContainer.innerHTML += `<div style="color: ${color}; margin: 5px 0;">[${timestamp}] ${message}</div>`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStatus(text, type = 'info') {
+            const statusText = document.getElementById('status-text');
+            statusText.textContent = text;
+            const statusDiv = document.getElementById('diagnostic-status');
+            
+            if (type === 'error') {
+                statusDiv.style.background = '#ffebee';
+                statusDiv.style.borderColor = '#f44336';
+            } else if (type === 'success') {
+                statusDiv.style.background = '#e8f5e9';
+                statusDiv.style.borderColor = '#4caf50';
+            } else {
+                statusDiv.style.background = '#e3f2fd';
+                statusDiv.style.borderColor = '#2196f3';
+            }
+        }
+        
+        function handleScriptError() {
+            log('❌ Failed to load Botpress script from CDN', 'error');
+            updateStatus('Failed to load Botpress CDN script', 'error');
+            showFallbackMessage();
+        }
+        
+        function showFallbackMessage() {
+            document.getElementById('status-message').innerHTML = 
+                '<p class="error-text">⚠️ Botpress Chatbot Unavailable</p>' +
+                '<small>Unable to connect to Botpress Cloud.<br>' +
+                'Possible causes:<br>' +
+                '• Network connectivity issues<br>' +
+                '• Firewall blocking cdn.botpress.cloud<br>' +
+                '• Invalid bot credentials<br>' +
+                '• Bot not published or deleted</small>';
+        }
+        
+        function initializeBotpress() {
+            log('✅ Botpress CDN script loaded successfully', 'success');
+            updateStatus('CDN script loaded, initializing bot...', 'info');
+            
+            // Set a timeout for initialization (15 seconds)
+            initTimeout = setTimeout(() => {
+                if (!document.getElementById('webchat').querySelector('iframe')) {
+                    log('⏱️ Botpress initialization timeout (15s)', 'error');
+                    updateStatus('Initialization timeout', 'error');
+                    showFallbackMessage();
+                }
+            }, 15000);
+            
+            try {
+                if (typeof window.botpress === 'undefined') {
+                    throw new Error('Botpress object not found after script load');
+                }
+                
+                log('🔧 Botpress object found, setting up event listeners...', 'info');
+                
+                window.botpress.on("webchat:ready", () => {
+                    clearTimeout(initTimeout);
+                    log('✅ Botpress webchat ready!', 'success');
+                    updateStatus('Chatbot loaded successfully!', 'success');
+                    document.getElementById('status-message').style.display = 'none';
+                    document.getElementById('webchat').style.display = 'block';
+                    window.botpress.open();
+                });
+                
+                window.botpress.on("webchat:error", (error) => {
+                    clearTimeout(initTimeout);
+                    log(`❌ Botpress error: ${JSON.stringify(error)}`, 'error');
+                    updateStatus('Botpress error occurred', 'error');
+                    showFallbackMessage();
+                });
+                
+                log('🚀 Initializing Botpress with bot ID: 3ad4bc32-d16f-49c5-a0f6-ded74c7bcec1', 'info');
+                
+                // Initialize Botpress
+                window.botpress.init({
+                    "botId": "3ad4bc32-d16f-49c5-a0f6-ded74c7bcec1",
+                    "configuration": {
+                        "version": "v2",
+                        "botName": "AgriTech Assistant",
+                        "botDescription": "",
+                        "website": {},
+                        "email": {},
+                        "phone": {},
+                        "termsOfService": {},
+                        "privacyPolicy": {},
+                        "color": "#ab4aba",
+                        "variant": "solid",
+                        "headerVariant": "glass",
+                        "themeMode": "light",
+                        "fontFamily": "inter",
+                        "radius": 3,
+                        "feedbackEnabled": false,
+                        "footer": "[⚡ by Botpress](https://botpress.com/?from=webchat)",
+                        "soundEnabled": false,
+                        "proactiveMessageEnabled": false,
+                        "proactiveBubbleMessage": "Hi! 👋 Need help?",
+                        "proactiveBubbleTriggerType": "afterDelay",
+                        "proactiveBubbleDelayTime": 10
+                    },
+                    "clientId": "9f464e23-0fb0-4cf9-b219-cecca1c49442",
+                    "selector": "#webchat"
+                });
+                
+                log('⏳ Waiting for webchat to initialize...', 'info');
+                
+            } catch (error) {
+                clearTimeout(initTimeout);
+                log(`❌ Botpress initialization error: ${error.message}`, 'error');
+                updateStatus('Initialization failed', 'error');
+                showFallbackMessage();
+            }
+        }
+        
+        // Log page load
+        log('📄 Test page loaded', 'info');
+        updateStatus('Loading Botpress CDN script...', 'info');
+    </script>
+</body>
+</html>
