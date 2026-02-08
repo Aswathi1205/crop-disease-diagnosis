@@ -223,6 +223,10 @@ class InferenceEngine(IPredictor):
             model_path = self.config['model']['model_path']
             num_classes = self.config['model']['num_classes']
             
+            # Convert to absolute path based on script location
+            base_dir = Path(__file__).parent
+            model_path = str(base_dir / model_path)
+            
             if not Path(model_path).exists():
                 st.error(f" Model file not found at: {model_path}")
                 st.info("Please ensure the trained model file exists at the specified location.")
