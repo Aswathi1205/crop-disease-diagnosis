@@ -54,6 +54,11 @@ An intelligent web application that uses deep learning to diagnose diseases in r
 
 ## 🎬 Demo
 
+### 🚀 Live Demo
+**Try it now:** [https://crop-disease-diagnosis-73e5c45p9lfjvyxlycbvfs.streamlit.app/](https://crop-disease-diagnosis-73e5c45p9lfjvyxlycbvfs.streamlit.app/)
+
+**GitHub Repository:** [https://github.com/Aswathi1205/crop-disease-diagnosis](https://github.com/Aswathi1205/crop-disease-diagnosis)
+
 ### Login & Authentication
 ```
 Username: admin
@@ -113,8 +118,8 @@ graph TD
 
 1. **Clone the Repository**
 ```bash
-git clone <repository-url>
-cd cnn-pytorch-main
+git clone https://github.com/Aswathi1205/crop-disease-diagnosis.git
+cd crop-disease-diagnosis
 ```
 
 2. **Create Virtual Environment**
