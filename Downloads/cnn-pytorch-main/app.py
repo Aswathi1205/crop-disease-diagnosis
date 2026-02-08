@@ -23,6 +23,7 @@ import streamlit.components.v1 as components
 import torch
 import json
 import bcrypt
+import os
 from PIL import Image
 from dataclasses import dataclass, asdict
 from datetime import datetime
@@ -187,6 +188,11 @@ class InferenceEngine(IPredictor):
     def __init__(self, config_loader: ConfigLoader, 
                  model_config_path: str = "config/model_config.json",
                  class_names_path: str = "config/class_names.json"):
+        
+        # Get absolute path to config files based on script location
+        base_dir = Path(__file__).parent
+        model_config_path = str(base_dir / model_config_path)
+        class_names_path = str(base_dir / class_names_path)
         
         self.config_loader = config_loader
         self.config = self._load_config(model_config_path)
