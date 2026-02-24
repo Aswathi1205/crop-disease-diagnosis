@@ -428,19 +428,6 @@ Contributions are welcome! Please follow these guidelines:
 - Write tests for new features
 - Maintain SOLID principles
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👥 Authors
-
-- **Your Name** - *Initial work*
-
----
 
 ## 🙏 Acknowledgments
 
@@ -449,13 +436,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Agricultural research institutions for disease data
 - Open-source community for various libraries
 
----
-
-## 📞 Contact & Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/repo/issues)
-- **Email**: your.email@example.com
-- **Documentation**: [Full Documentation](docs/)
 
 ---
 
